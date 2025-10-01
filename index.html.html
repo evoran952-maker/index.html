@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evoran - Minimalist Clothing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for Masonry/Pinterest Layout */
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 4;
+            }
+        }
+        .product-card {
+            display: inline-block;
+            margin-bottom: 1rem;
+            width: 100%;
+            break-inside: avoid;
+            min-height: 1px;
+        }
+        .product-card img {
+            width: 100%;
+            height: auto;
+            display: block; 
+        }
+
+        /* Dark Mode configuration for HTML/Tailwind */
+        .dark .bg-white { background-color: #111827; }
+        .dark .text-gray-900 { color: #f9fafb; }
+        /* Scrollbar styles for modal (optional) */
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+
+    <header class="fixed top-0 left-0 right-0 z-20 shadow-md backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-2xl font-extrabold tracking-widest uppercase">Evoran</h1>
+            <nav class="flex space-x-4 items-center">
+                <button id="contact-button" class="px-3 py-1 text-sm font-medium rounded-full text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors duration-200">
+                    Contact Us
+                </button>
+                <button id="dark-mode-toggle" aria-label="Toggle Dark Mode" class="p-2 rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white transition-colors duration-200">
+                    🌙
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-20 max-w-7xl mx-auto p-4">
+        <h2 class="text-4xl font-extrabold text-center mb-8 pt-4">Evoran Gallery</h2>
+        
+        <div id="app-container">
+            <div id="gallery-view" class="masonry-grid">
+                </div>
+        </div>
+    </main>
+
+    <footer class="w-full mt-12 py-6 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+        <p>&copy; <span id="current-year"></span> Evoran. All Rights Reserved.</p>
+        <p>Minimal Style. Maximum Impact.</p>
+    </footer>
+
+    <div id="product-modal" class="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden">
+        </div>
+
+    <div id="contact-modal" class="fixed inset-0 z-40 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden">
+        <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6" onclick="event.stopPropagation()">
+            <button onclick="closeModal('contact-modal')" aria-label="Close Contact Modal" class="absolute top-3 right-3 text-xl font-bold p-2 text-gray-800 dark:text-white hover:text-red-500 transition">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center">Contact Evoran</h2>
+            <div class="space-y-4">
+                <a href="https://m.me/stylique" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition-colors duration-200">
+                    <span class="text-xl mr-2">💬</span> Contact via Messenger
+                </a>
+                <a href="mailto:evoran952@gmail.com" class="flex items-center justify-center w-full px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white font-semibold rounded-lg shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+                    <span class="text-xl mr-2">📧</span> Send us an Email
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- PRODUCT DATA: YOUR 23 DIRECT IMAGE LINKS ARE HERE ---
+        const PRODUCT_IMAGES = [
+            "https://i.ibb.co.com/1fHXXP4g/2uplod.jpg",
+            "https://i.ibb.co.com/QjcqHxYx/3upload.jpg",
+            "https://i.ibb.co.com/b52GQqmy/4upload.jpg",
+            "https://i.ibb.co.com/60dShzJL/frist-upload.jpg",
+            "https://i.ibb.co.com/xKvwc671/tee1-png.jpg",
+            "https://i.ibb.co.com/0ychhrsw/Whats-App-Image-2025-09-28-at-9-54-14-AM-1.jpg",
+            "https://i.ibb.co.com/yBg70b9y/Whats-App-Image-2025-09-28-at-9-54-14-AM-2.jpg",
+            "https://i.ibb.co.com/5WPKrZX3/Whats-App-Image-2025-09-28-at-9-54-14-AM.jpg",
+            "https://i.ibb.co.com/spPV6WrJ/Whats-App-Image-2025-09-29-at-1-07-49-PM-1.jpg",
+            "https://i.ibb.co.com/gL9svgMb/Whats-App-Image-2025-09-29-at-1-07-49-PM.jpg",
+            "https://i.ibb.co.com/nss02YZs/Whats-App-Image-2025-09-29-at-1-07-50-PM-1.jpg",
+            "https://i.ibb.co.com/361Wkgg/Whats-App-Image-2025-09-29-at-1-07-50-PM.jpg",
+            "https://i.ibb.co.com/NnW6czYS/Whats-App-Image-2025-09-30-at-2-47-47-PM.jpg",
+            "https://i.ibb.co.com/ymwG90hs/Whats-App-Image-2025-09-30-at-2-47-48-PM-1.jpg",
+            "https://i.ibb.co.com/ZpKz7qN9/Whats-App-Image-2025-09-30-at-2-47-48-PM.jpg",
+            "https://i.ibb.co.com/RkDjHZS4/Whats-App-Image-2025-09-30-at-2-47-49-PM-1.jpg",
+            "https://i.ibb.co.com/NdYCdnfK/Whats-App-Image-2025-09-30-at-2-47-49-PM.jpg",
+            "https://i.ibb.co.com/DF1Zt6f/Whats-App-Image-2025-09-30-at-2-47-50-PM.jpg",
+            "https://i.ibb.co.com/qMxH4vgC/Whats-App-Image-2025-09-30-at-2-47-51-PM-1.jpg",
+            "https://i.ibb.co.com/cSsF4yPg/Whats-App-Image-2025-09-30-at-2-47-51-PM-2.jpg",
+            "https://i.ibb.co.com/C33sMNS9/Whats-App-Image-2025-09-30-at-2-47-51-PM.jpg",
+            "https://i.ibb.co.com/mrVZzyyN/Whats-App-Image-2025-09-30-at-2-47-52-PM.jpg",
+            "https://i.ibb.co.com/RTpW4cGR/Whats-App-Image-2025-09-30-at-2-47-53-PM.jpg"
+        ];
+        
+        // 23 Unique, Professional Titles for the products
+        const PRODUCT_TITLES = [
+            "The Zenith Overshirt", "Essential Crewneck", "Structured Daily Tee", 
+            "Urban Knit Jumper", "Classic Core Hoodie", "Minimalist Tailored Trouser",
+            "Relaxed Fit Linen Shirt", "Sleek Black Denim", "The Coastal Pullover",
+            "Shadow Grey Chinos", "The Monolith Coat", "Meridian Utility Vest",
+            "Balanced Oxford Shirt", "Unfiltered White Tee", "The Signature Bomber",
+            "Soft-Touch Sweatpant", "Horizon Quarter-Zip", "Charcoal Lounge Set",
+            "Timeless Wool Blend", "Elemental Black Trousers", "The Purity T-Shirt",
+            "Aero Knit Polo", "Streamline Track Jacket" 
+        ];
+        // --- END OF PRODUCT DATA ---
+
+
+        // --- Constants & Globals ---
+        const LOCAL_STORAGE_KEY = 'evoran_gallery_data';
+        const ELEMENTS = {
+            html: document.documentElement,
+            darkModeToggle: document.getElementById('dark-mode-toggle'),
+            galleryView: document.getElementById('gallery-view'),
+            contactButton: document.getElementById('contact-button'),
+            contactModal: document.getElementById('contact-modal'),
+            productModal: document.getElementById('product-modal'),
+        };
+
+        let isDarkMode = localStorage.getItem('evoran_dark_mode') === 'true';
+
+        // Gallery data is now populated using the unique titles
+        let galleryData = {
+            items: PRODUCT_IMAGES.map((url, index) => ({
+                id: index + 1,
+                // Using the unique title from the new array
+                title: PRODUCT_TITLES[index] || `Evoran Item ${index + 1}`,
+                sku: `EVR-M-${(index + 1).toString().padStart(3, '0')}`,
+                description: "A timeless minimalist piece, crafted for comfort and lasting style. Perfect for an elevated everyday look.",
+                image_url: url
+            })),
+            globalDescription: "Style that defines you. Find your perfect fit with Evoran."
+        };
+
+        // --- Utility Functions ---
+
+        function toggleDarkMode(initial = false) {
+            if (!initial) {
+                isDarkMode = !isDarkMode;
+                localStorage.setItem('evoran_dark_mode', isDarkMode);
+            }
+            ELEMENTS.html.classList.toggle('dark', isDarkMode);
+            ELEMENTS.darkModeToggle.innerHTML = isDarkMode ? '💡' : '🌙';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            // Re-enable scroll
+            document.body.style.overflow = '';
+        }
+
+        // --- Event Handlers & Rendering ---
+
+        function handleDemoPurchase(size, title) {
+            alert(`Demo Purchase: "${title}" selected in size ${size}. No real payment made.`);
+            closeModal('product-modal');
+        }
+
+        function openProductModal(itemId) {
+            const item = galleryData.items.find(i => i.id === itemId);
+            if (!item) return;
+            renderProductModal(item);
+        }
+
+        function renderProductModal(item) {
+            const modal = ELEMENTS.productModal;
+            const description = item.description || galleryData.globalDescription;
+            const imageUrl = item.image_url; 
+
+            modal.innerHTML = `
+                <div role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="event.stopPropagation()" class="relative w-full max-w-4xl max-h-[90vh] bg-white dark:bg-gray-800 rounded-xl shadow-2xl flex flex-col md:flex-row overflow-hidden transition-all duration-300 transform scale-100">
+                    <button onclick="closeModal('product-modal')" aria-label="Close Modal" class="absolute top-3 right-3 z-10 text-xl font-bold p-2 bg-white dark:bg-gray-900 rounded-full text-gray-800 dark:text-white hover:text-red-500 transition">&times;</button>
+                    
+                    <div class="md:w-1/2 p-4 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+                        <img src="${imageUrl}" alt="${item.title}" class="object-contain max-h-[400px] md:max-h-full rounded-lg shadow-lg">
+                    </div>
+                    
+                    <div class="md:w-1/2 p-6 overflow-y-auto modal-content">
+                        <h2 id="modal-title" class="text-3xl font-bold mb-2 text-gray-900 dark:text-white">${item.title}</h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">SKU: ${item.sku}</p>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">${description}</p>
+                        
+                        <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Select Size</h3>
+                        <div id="size-buttons" class="flex space-x-3 mb-6">
+                            ${['S', 'M', 'L', 'XL'].map(size => `
+                                <button onclick="handleDemoPurchase('${size}', '${item.title}')" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">${size}</button>
+                            `).join('')}
+                        </div>
+                        
+                        <a href="https://m.me/stylique" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200">
+                            Contact via Messenger
+                        </a>
+                    </div>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+            modal.querySelector('button[aria-label="Close Modal"]').focus();
+        }
+
+        function renderGallery() {
+            const galleryHtml = galleryData.items.map(item => `
+                <div class="product-card group relative cursor-pointer" onclick="openProductModal(${item.id})">
+                    <div class="relative overflow-hidden rounded-lg shadow-lg transform group-hover:scale-[1.02] transition-transform duration-300">
+                        <img src="${item.image_url}" alt="${item.title}" loading="lazy" class="w-full h-auto object-cover">
+                        
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300 flex items-center justify-center">
+                            <span class="text-white text-xl font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2 rounded-full backdrop-blur-sm bg-black/30">View Look</span>
+                        </div>
+                    </div>
+                    <div class="p-2">
+                        <h3 class="text-sm font-medium dark:text-white">${item.title}</h3>
+                    </div>
+                </div>
+            `).join('');
+
+            ELEMENTS.galleryView.innerHTML = galleryHtml;
+        }
+
+        // --- Initialization and Event Binding ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            toggleDarkMode(true); 
+            renderGallery(); 
+
+            // Event Listeners
+            ELEMENTS.darkModeToggle.addEventListener('click', () => toggleDarkMode());
+            ELEMENTS.contactButton.addEventListener('click', () => {
+                ELEMENTS.contactModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; 
+            });
+            ELEMENTS.contactModal.addEventListener('click', (e) => {
+                if (e.target.id === 'contact-modal') closeModal('contact-modal');
+            });
+            ELEMENTS.productModal.addEventListener('click', (e) => {
+                 if (e.target.id === 'product-modal') closeModal('product-modal');
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!ELEMENTS.productModal.classList.contains('hidden')) closeModal('product-modal');
+                    else if (!ELEMENTS.contactModal.classList.contains('hidden')) closeModal('contact-modal');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
